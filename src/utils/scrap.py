@@ -6,6 +6,7 @@ from aiohttp import ClientTimeout, TCPConnector
 from aiohttp_retry import RetryClient, ExponentialRetry
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+from typing import Coroutine, Any
 
 BASE_URL = "https://www.afro.who.int/health-topics/disease-outbreaks/outbreaks-and-other-emergencies-updates"
 DOWNLOAD_DIR = "who_afro_bulletins"
@@ -19,15 +20,17 @@ def sanitize(name: str) -> str:
     return re.sub(r"[^\w\-_. ]", "_", name) + ".pdf"
 
 
-async def fetch_page_links(retry_client: RetryClient, page: int):
+async def fetch_page_links(
+    retry_client: RetryClient, page: int
+) -> list[tuple[str, str]]:
     url = f"{BASE_URL}?page={page}" if page else BASE_URL
     async with retry_client.get(url) as resp:
         text = await resp.text()
     soup = BeautifulSoup(text, "html.parser")
     return [
         (
-            a.get_text(strip=True) or os.path.basename(a["href"]),
-            urljoin(BASE_URL, a["href"]),
+            str(a.get_text(strip=True) or os.path.basename(str(a["href"]))),
+            urljoin(BASE_URL, str(a["href"])),
         )
         for a in soup.select("a[href$='.pdf']")
     ]
@@ -63,7 +66,7 @@ async def main():
         headers={"User-Agent": "DownloaderBot/1.0"},
     ) as session:
         retry_client = RetryClient(session, retry_options=retry_options)
-        tasks = []
+        tasks: list[Coroutine[Any, Any, None]] = []  # typing for tasks
         for page in range(PAGE_LIMIT):
             links = await fetch_page_links(retry_client, page)
             if not links:
