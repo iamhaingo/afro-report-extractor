@@ -1,1 +1,5 @@
-src/notebooks
+src/notebook
+src/dataset/who_afro_bulletins
+
+# add pycache to .gitignore
+src/old/__pycache__/
