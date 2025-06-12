@@ -1,5 +1,6 @@
 src/notebook
 src/dataset/who_afro_bulletins
+src/dataset/csv
 
 # add pycache to .gitignore
 src/old/__pycache__/
