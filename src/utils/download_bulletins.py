@@ -8,6 +8,8 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from typing import Coroutine, Any
 
+# Download all WHO AFRO bulletins in parallel
+
 BASE_URL = "https://www.afro.who.int/health-topics/disease-outbreaks/outbreaks-and-other-emergencies-updates"
 DOWNLOAD_DIR = "who_afro_bulletins"
 PAGE_LIMIT = 10
