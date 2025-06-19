@@ -3,7 +3,7 @@ src/dataset/who_afro_bulletins
 src/dataset/csv
 src/.DS_Store
 output/
-
+input_pdfs/
 # pycache directories
 src/__pycache__/
 src/old/__pycache__/
