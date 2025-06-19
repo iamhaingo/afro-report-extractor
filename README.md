@@ -1,3 +1,3 @@
 # afro-report-extractor
-Repo for extraction of table from pdf from WHO reports
+Table extraction of WHO bulletins
 - https://www.afro.who.int/health-topics/disease-outbreaks/outbreaks-and-other-emergencies-updates
