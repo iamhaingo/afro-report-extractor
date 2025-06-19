@@ -8,7 +8,7 @@ import pandas as pd
 _log = logging.getLogger(__name__)
 
 
-def convert_document_and_export_tables(input_doc_path: Path, output_dir: Path):
+def extract_tables_from_pdf(input_doc_path: Path, output_dir: Path):
     logging.basicConfig(level=logging.INFO)
 
     doc_converter = DocumentConverter()

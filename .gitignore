@@ -2,5 +2,14 @@ src/notebook
 src/dataset/who_afro_bulletins
 src/dataset/csv
 
+# pycache directories
+src/__pycache__/
+src/old/__pycache__/
+src/dataset/__pycache__/
+src/dataset/who_afro_bulletins/__pycache__/
+src/dataset/csv/__pycache__/
+src/notebook/__pycache__/
+src/utils/__pycache__/
+
 # add pycache to .gitignore
 src/old/__pycache__/
