@@ -1,6 +1,7 @@
 src/notebook
 src/dataset/who_afro_bulletins
 src/dataset/csv
+src/.DS_Store
 
 # pycache directories
 src/__pycache__/
