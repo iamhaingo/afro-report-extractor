@@ -2,19 +2,24 @@ import csv
 import pandas as pd
 from pathlib import Path
 import logging
+import re
 
 _log = logging.getLogger(__name__)
 
 
 def clean_and_combine_csvs(directory_path: Path, output_file: Path):
     combined_data: list[list[str]] = []
-    for input_file in sorted(directory_path.glob("*.csv")):
+    for input_file in sorted(
+        directory_path.glob("*.csv"), key=lambda x: int(re.findall(r"\d+", x.stem)[-1])
+    ):
         rows_total = rows_kept = 0
         with open(input_file, "r", encoding="utf-8", errors="replace") as infile:
             reader = csv.reader(infile)
             for row in reader:
                 rows_total += 1
                 if not row or all(not cell.strip() for cell in row):
+                    continue
+                if len(row) < 8:
                     continue
                 if (len(row) > 1 and row[1] in ["New Events", "Ongoing Events"]) or any(
                     marker in str(row) for marker in ["New Events", "Ongoing Events"]
@@ -44,6 +49,7 @@ def assign_event_types(combined_df: pd.DataFrame) -> pd.DataFrame:
     combined_df.loc[combined_df["Country"] == "Ongoing Events", "Event Type"] = (
         "Ongoing"
     )
+    combined_df.loc[combined_df["Country"] == "Closed Events", "Event Type"] = "Closed"
 
     new_events_index = combined_df.index[
         combined_df["Country"] == "New Events"
@@ -51,14 +57,30 @@ def assign_event_types(combined_df: pd.DataFrame) -> pd.DataFrame:
     ongoing_events_index = combined_df.index[
         combined_df["Country"] == "Ongoing Events"
     ].tolist()
+    closed_events_index = combined_df.index[
+        combined_df["Country"] == "Closed Events"
+    ].tolist()
 
-    if new_events_index and ongoing_events_index:
-        for i in range(new_events_index[0] + 1, ongoing_events_index[0]):
+    if new_events_index:
+        end_index = (
+            ongoing_events_index[0]
+            if ongoing_events_index
+            else (closed_events_index[0] if closed_events_index else len(combined_df))
+        )
+        for i in range(new_events_index[0] + 1, end_index):
             combined_df.loc[i, "Event Type"] = "New"
-        for i in range(ongoing_events_index[0] + 1, len(combined_df)):
+
+    if ongoing_events_index:
+        end_index = closed_events_index[0] if closed_events_index else len(combined_df)
+        for i in range(ongoing_events_index[0] + 1, end_index):
             combined_df.loc[i, "Event Type"] = "Ongoing"
 
+    if closed_events_index:
+        for i in range(closed_events_index[0] + 1, len(combined_df)):
+            combined_df.loc[i, "Event Type"] = "Closed"
+
     combined_df = combined_df[
-        ~combined_df["Country"].isin(["New Events", "Ongoing Events"])
+        ~combined_df["Country"].isin(["New Events", "Ongoing Events", "Closed Events"])
     ]
+
     return combined_df
