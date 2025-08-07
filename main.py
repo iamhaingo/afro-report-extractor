@@ -10,7 +10,7 @@ from src.utils.file_manip import delete_directory, delete_individual_csv
 from src.config import (
     INPUT_PDF_DIR,
     BASE_OUTPUT_DIR,
-)  # adjust config to use directory instead of single file
+)
 
 logging.basicConfig(level=logging.INFO)
 _log = logging.getLogger(__name__)
