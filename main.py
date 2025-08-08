@@ -5,7 +5,16 @@ import pandas as pd
 from pathlib import Path
 
 from src.pdf_processor import extract_tables_from_pdf
-from src.data_cleaner import clean_and_combine_csvs, assign_event_types
+from src.data_cleaner import (
+    clean_and_combine_csvs,
+    assign_event_types,
+    attach_descriptions_by_length,
+    clean_combined_data,
+    add_iso3_column,
+    add_pdf_name_column,
+    add_week_and_date,
+    rearrange,
+)
 from src.utils.file_manip import delete_directory, delete_individual_csv
 from src.config import (
     INPUT_PDF_DIR,
@@ -29,8 +38,32 @@ def process_pdf(pdf_path: Path, output_dir: Path, combined_output_file: Path):
     # Read combined CSV
     combined_df = pd.read_csv(combined_output_file)
 
+    # remove Unnamed: 0 column
+    combined_df = combined_df.drop(columns=["Unnamed: 0"], errors="ignore")
+
+    # drop duplicate rows
+    combined_df = combined_df.drop_duplicates()
+
     # Assign event types
     combined_df = assign_event_types(combined_df)
+
+    # Attach descriptions by length
+    combined_df = attach_descriptions_by_length(combined_df)
+
+    # Clean combined data
+    combined_df = clean_combined_data(combined_df)
+
+    # Add ISO3 column
+    combined_df = add_iso3_column(combined_df)
+
+    # Add PDF name column
+    combined_df = add_pdf_name_column(combined_df, pdf_path)
+
+    # Add week and date columns
+    combined_df = add_week_and_date(combined_df, pdf_path.stem)
+
+    # Rearrange columns
+    combined_df = rearrange(combined_df)
 
     # Save final CSV
     combined_df.to_csv(combined_output_file, index=False)
