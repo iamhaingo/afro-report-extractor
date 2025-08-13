@@ -39,6 +39,7 @@ def process_pdf(pdf_path: Path, output_dir: Path, combined_output_file: Path):
     combined_df = pd.read_csv(combined_output_file)
 
     # remove Unnamed: 0 column
+    combined_df = combined_df.dropna(thresh=8)
     combined_df = combined_df.drop(columns=["Unnamed: 0"], errors="ignore")
 
     # drop duplicate rows

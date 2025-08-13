@@ -11,7 +11,7 @@ from typing import Coroutine, Any
 # Configuration
 BASE_URL = "https://www.afro.who.int/health-topics/disease-outbreaks/outbreaks-and-other-emergencies-updates"
 DOWNLOAD_DIR = "who_afro_bulletins"
-PAGE_LIMIT = 10
+PAGE_LIMIT = 14
 CONCURRENT_DOWNLOADS = 5
 
 # Ensure download directory exists
