@@ -2,7 +2,8 @@ src/notebook
 src/dataset/who_afro_bulletins
 src/dataset/csv
 src/.DS_Store
-output/
+
+# output/
 input_pdfs/
 who_afro_bulletins
 # pycache directories

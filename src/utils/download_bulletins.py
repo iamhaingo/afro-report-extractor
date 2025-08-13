@@ -11,8 +11,8 @@ from typing import Coroutine, Any
 # Configuration
 BASE_URL = "https://www.afro.who.int/health-topics/disease-outbreaks/outbreaks-and-other-emergencies-updates"
 DOWNLOAD_DIR = "who_afro_bulletins"
-PAGE_LIMIT = 15
-CONCURRENT_DOWNLOADS = 20
+PAGE_LIMIT = 10
+CONCURRENT_DOWNLOADS = 5
 
 # Ensure download directory exists
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
@@ -70,7 +70,7 @@ async def main():
     retry_options = ExponentialRetry(
         attempts=5,
         start_timeout=1,
-        max_timeout=60,
+        max_timeout=120,
         statuses={429, 500, 502, 503, 504},
     )
     semaphore = asyncio.Semaphore(CONCURRENT_DOWNLOADS)
