@@ -67,7 +67,7 @@ def assign_event_types(combined: pd.DataFrame) -> pd.DataFrame:
     expected_headers = [
         "Country",
         "Event",
-        "Event Grade",
+        "Grade",
         "Date notified to WCO",
         "Start of reporting period",
         "End of reporting period",
@@ -225,6 +225,13 @@ def rearrange(combined: pd.DataFrame) -> pd.DataFrame:
             "Grade": "GRADE",
             "Event": "EVENT_NAME",
             "Country": "COUNTRY",
+        }
+    )
+
+    combined = combined.rename(
+        columns={
+            "Start of reporting": "DATE_START",
+            "End of reporting": "DATE_END",
         }
     )
 

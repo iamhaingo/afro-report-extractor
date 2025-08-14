@@ -73,6 +73,10 @@ def process_pdf(pdf_path: Path, output_dir: Path, combined_output_file: Path):
     # Delete individual CSVs
     delete_individual_csv(csv_files, combined_output_file)
 
+    # log the missing EVENT_TYPE values
+    if combined_df["EVENT_TYPE"].isna().sum() > 20:
+        raise ValueError(f"{pdf_path.name} has missing EVENT_TYPE values")
+
 
 def main():
     start_time = time.time()
