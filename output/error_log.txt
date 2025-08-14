@@ -1,0 +1,78 @@
+File: OEW33-1218082024.pdf
+Error: OEW33-1218082024.pdf has missing EVENT_TYPE values
+
+File: OEW29-1521072024.pdf
+Error: OEW29-1521072024.pdf has missing EVENT_TYPE values
+
+File: OEW24-0915062025.pdf
+Error: OEW24-0915062025.pdf has missing EVENT_TYPE values
+
+File: OEW35-270803092023.pdf
+Error: OEW35-270803092023.pdf has missing EVENT_TYPE values
+
+File: OEW26-2329062025.pdf
+Error: OEW26-2329062025.pdf has missing EVENT_TYPE values
+
+File: OEW18-290405052024.pdf
+Error: OEW18-290405052024.pdf has missing EVENT_TYPE values
+
+File: OEW42-1420102024.pdf
+Error: OEW42-1420102024.pdf has missing EVENT_TYPE values
+
+File: OEW33-1420082023.pdf
+Error: OEW33-1420082023.pdf has missing EVENT_TYPE values
+
+File: OEW10-0309032025.pdf
+Error: OEW10-0309032025.pdf has missing EVENT_TYPE values
+
+File: OEW51-1824122023.pdf
+Error: OEW51-1824122023.pdf has missing EVENT_TYPE values
+
+File: OEW39-2329092024.pdf
+Error: OEW39-2329092024.pdf has missing EVENT_TYPE values
+
+File: OEW23-290504062023.pdf
+Error: OEW23-290504062023.pdf has missing EVENT_TYPE values
+
+File: OEW24-050611062023.pdf
+Error: OEW24-050611062023.pdf has missing EVENT_TYPE values
+
+File: OEW04-2026012025.pdf
+Error: OEW04-2026012025.pdf has missing EVENT_TYPE values
+
+File: OEW07-1016022025.pdf
+Error: OEW07-1016022025.pdf has missing EVENT_TYPE values
+
+File: OEW41-0915102023.pdf
+Error: OEW41-0915102023.pdf has missing EVENT_TYPE values
+
+File: OEW28-0713072025.pdf
+Error: OEW28-0713072025.pdf has missing EVENT_TYPE values
+
+File: OEW50-0915122024.pdf
+Error: OEW50-0915122024.pdf has missing EVENT_TYPE values
+
+File: OEW44-301005112023.pdf
+Error: "['GRADE'] not in index"
+
+File: OEW05-2702012025.pdf
+Error: OEW05-2702012025.pdf has missing EVENT_TYPE values
+
+File: OEW09-240202032025.pdf
+Error: OEW09-240202032025.pdf has missing EVENT_TYPE values
+
+File: OEW25-1622062025.pdf
+Error: OEW25-1622062025.pdf has missing EVENT_TYPE values
+
+File: OEW25-1218062023.pdf
+Error: OEW25-1218062023.pdf has missing EVENT_TYPE values
+
+File: OEW43-2329102023.pdf
+Error: "['GRADE'] not in index"
+
+File: OEW40-0208102023.pdf
+Error: Expected 10 columns, but got 9 — cannot assign headers safely.
+
+File: OEW34-2127082023.pdf
+Error: OEW34-2127082023.pdf has missing EVENT_TYPE values
+
