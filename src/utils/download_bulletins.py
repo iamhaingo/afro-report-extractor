@@ -1,6 +1,7 @@
 import os
 import re
 import asyncio
+from pathlib import Path
 import aiohttp
 from aiohttp import ClientTimeout, TCPConnector
 from aiohttp_retry import RetryClient, ExponentialRetry
@@ -12,7 +13,9 @@ from typing import Coroutine, Any
 BASE_URL = "https://www.afro.who.int/health-topics/disease-outbreaks/outbreaks-and-other-emergencies-updates"
 DOWNLOAD_DIR = "who_afro_bulletins"
 PAGE_LIMIT = 5
-CONCURRENT_DOWNLOADS = 5
+CONCURRENT_DOWNLOADS = 2
+MIN_VALID_PDF_SIZE_BYTES = 1024
+DOWNLOAD_ATTEMPTS = 3
 
 # Ensure download directory exists
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
@@ -21,6 +24,16 @@ os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 # Sanitize filename (optional, but useful for safety)
 def sanitize(name: str) -> str:
     return re.sub(r"[^\w\-_.]", "_", name)
+
+
+def is_valid_pdf_file(filepath: Path) -> bool:
+    if not filepath.exists() or filepath.stat().st_size < MIN_VALID_PDF_SIZE_BYTES:
+        return False
+
+    # Some files may include leading bytes before the PDF header.
+    with filepath.open("rb") as f:
+        header = f.read(1024)
+    return b"%PDF-" in header
 
 
 # Extract list of (filename, full_url) for PDFs on a page
@@ -45,22 +58,40 @@ async def download_pdf(
     sem: asyncio.Semaphore, retry_client: RetryClient, filename: str, url: str
 ):
     sanitized_name = sanitize(filename)
-    filepath = os.path.join(DOWNLOAD_DIR, sanitized_name)
-    if os.path.exists(filepath):
-        print(f"[SKIP] {sanitized_name}")
-        return
+    filepath = Path(DOWNLOAD_DIR) / sanitized_name
+    temp_filepath = filepath.with_suffix(filepath.suffix + ".part")
+
+    if filepath.exists():
+        if is_valid_pdf_file(filepath):
+            print(f"[SKIP] {sanitized_name}")
+            return
+        print(f"[RETRY] Existing file looks corrupted/small: {sanitized_name}")
+        filepath.unlink(missing_ok=True)
 
     async with sem:
-        print(f"[DOWNLOAD] {sanitized_name}")
-        async with retry_client.get(url) as resp:
-            if resp.status != 200:
-                print(
-                    f"[ERROR] Failed to download {sanitized_name} (Status: {resp.status})"
-                )
+        for attempt in range(1, DOWNLOAD_ATTEMPTS + 1):
+            print(f"[DOWNLOAD] {sanitized_name} (attempt {attempt}/{DOWNLOAD_ATTEMPTS})")
+            temp_filepath.unlink(missing_ok=True)
+            async with retry_client.get(url) as resp:
+                if resp.status != 200:
+                    print(
+                        f"[ERROR] Failed to download {sanitized_name} (Status: {resp.status})"
+                    )
+                    continue
+
+                with temp_filepath.open("wb") as f:
+                    async for chunk in resp.content.iter_chunked(8192):
+                        f.write(chunk)
+
+            if is_valid_pdf_file(temp_filepath):
+                temp_filepath.replace(filepath)
+                print(f"[OK] Saved {sanitized_name}")
                 return
-            with open(filepath, "wb") as f:
-                async for chunk in resp.content.iter_chunked(8192):
-                    f.write(chunk)
+
+            print(f"[WARN] Invalid PDF received for {sanitized_name}, retrying...")
+            temp_filepath.unlink(missing_ok=True)
+
+        print(f"[ERROR] Gave up after retries: {sanitized_name}")
 
 
 # Main asynchronous entry point
@@ -93,7 +124,7 @@ async def main():
                 tasks.append(download_pdf(semaphore, retry_client, filename, url))
 
         await asyncio.gather(*tasks)
-        print(f"[DONE] Downloaded {len(tasks)} PDFs.")
+        print(f"[DONE] Tried downloading {len(tasks)} PDFs.")
 
 
 # Run the script
